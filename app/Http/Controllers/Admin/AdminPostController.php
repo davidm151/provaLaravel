@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+use App\Models\Category;
+use App\Models\Tag;
+use App\Http\Requests\StorePostRequest;
 class AdminPostController extends Controller
 {
     /**
@@ -26,7 +28,9 @@ class AdminPostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories=Category::pluck('name','id');
+        $tags=Tag::all();
+        return view('admin.posts.create',compact('categories','tags'));
     }
 
     /**
@@ -35,9 +39,13 @@ class AdminPostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        //
+       $post = Post::create($request->all());
+       if ($request->tags) {
+           $post->tags()->attach($request->tags);
+        }
+        return redirect()->route('admin.posts.edit',$post);
     }
 
     /**

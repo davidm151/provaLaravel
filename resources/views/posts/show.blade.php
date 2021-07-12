@@ -18,9 +18,18 @@
                 <ul>
                     @foreach ($similares as $similar)
                         <li class="mb-4">
-                            <a class="flex" href="{{ route('posts.show',$similar)}}"></a>
-                            <img class="w-36 h-20 object-cover object-center" src="{{ Storage::url($similar->image->url) }}" alt="">
-                            <span class="ml-2 text-gray-600">{{ $similar->name }}</span>
+                            <article class="w-full h-80 bg-cover bg-center @if ($loop->first) md:col-span-2
+                                @endif" style="background-image: url({{ '/storage/' . $similar->image->url }})">                          
+                            
+                            {{-- <img href="{{ route('posts.tag',$similar)}}" class="w-36 h-20 object-cover object-center" src="{{ Storage::url($similar->image->url) }}" alt=""> --}}
+                            <div class="w-full h-full px-8 flex flex-col justify-center">
+                                <h1 class="text-4xl text-white lading-8 font-bold mt-2">
+                                    <a href="{{ route('posts.show',$similar)}}">{{ $post->name }}</a>
+                                </h1>
+                            </div>
+                            {{-- <span class="ml-2 text-gray-600">{{ $similar->name }}</span> --}}
+                            </article>
+
                         </li>
                     @endforeach
                 </ul>
