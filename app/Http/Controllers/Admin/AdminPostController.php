@@ -7,9 +7,17 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Tag;
-use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Storage;
 class AdminPostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin.posts.index')->only('index');
+        $this->middleware('can:admin.posts.create')->only('create','store');
+        $this->middleware('can:admin.posts.edit')->only('edit','update');
+        $this->middleware('can:admin.posts.destroy')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -39,9 +47,19 @@ class AdminPostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePostRequest $request)
+    public function store(PostRequest $request)
     {
+    //    return $request->file('file')
        $post = Post::create($request->all());
+
+        if ($request->file('file')) {
+            // str_replace("11223344", "","REGISTER 11223344 here");
+            $url= str_replace('public/','',Storage::put('public/posts', $request->file('file')));
+            $post->image()->create([
+                'url' => $url
+            ]);
+        }
+
        if ($request->tags) {
            $post->tags()->attach($request->tags);
         }
@@ -56,6 +74,7 @@ class AdminPostController extends Controller
      */
     public function show(Post $post)
     {
+     
         return view('admin.posts.show',compact('post'));
     }
 
@@ -65,9 +84,15 @@ class AdminPostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
-    {
-        return view('admin.posts.edit',compact('post'));
+    public function edit(Post $postss)
+    {   
+       
+        $this->authorize('author',$postss);
+
+        $post=$postss;
+        $categories=Category::pluck('name','id');
+        $tags=Tag::all();
+        return view('admin.posts.edit',compact('postss','post','categories','tags'));
     }
 
     /**
@@ -77,9 +102,27 @@ class AdminPostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $postss)
     {
-        //
+        $this->authorize('author',$postss);
+        $postss->update($request->all());
+        if ($request->file('file')) {
+            $url=str_replace('public/','',Storage::put('public/posts', $request->file('file')));
+            if ($postss->image) {
+                Storage::delete($postss->image->url);
+                $postss->image->update([
+                    'url' => $url
+                ]);
+            }else{
+                $postss->image()->create([
+                    'url' => $url
+                ]);
+            }
+        }
+         if ($request->tags) {
+            $postss->tags()->sync($request->tags);
+        }
+        return redirect()->route('admin.posts.edit',$postss)->with('info','El post se actualizo correctamente.');
     }
 
     /**
@@ -88,8 +131,10 @@ class AdminPostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Post $postss)
     {
-        //
-    }
+        $this->authorize('author',$postss);
+        $postss->delete();
+        return redirect()->route('admin.posts.index')->with('info','El post se elimino correctamente.');
+     }
 }

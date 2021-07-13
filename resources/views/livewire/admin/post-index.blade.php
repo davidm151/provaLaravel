@@ -23,9 +23,11 @@
                         </td>
                         <td width="10px">
                             <a class="btn btn-primary btn-sm" href="{{ route('admin.posts.edit',$post) }}">Editar</a>
+                            {{-- <a class="btn btn-primary btn-sm" href="{{ route('admin.posts.destroy', $post) }}">Eliminar</a> --}}
                         </td>
-                        <td  width="10px">
-                            <form action="{{ route('admin.posts.destroy',$post) }}" method="POST">
+
+                        <td width="10px">
+                            <form action="{{ route('admin.posts.destroy', $post) }}" method="POST">
                                 @csrf
                                 @method('delete')
                                 <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>

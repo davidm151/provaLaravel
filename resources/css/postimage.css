@@ -1,0 +1,23 @@
+.post-container{
+    margin: 20px 20px 0 0;  
+    border:5px solid #333;
+    width:600px;
+    overflow:hidden;
+}
+
+.post-thumb img {
+    float: left;
+    clear:left;
+    width:50px;
+    height:50px;
+    border:1px solid red;
+}
+
+.post-title {
+     float:left;   
+    margin-left:10px;
+}
+
+.post-content {
+    float:right;
+}
