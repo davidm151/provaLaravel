@@ -2,21 +2,21 @@
     {!! Form::label('name','Nombre:') !!}
     {!! Form::text('name', null, ['class' =>'form-control','placeholder'=>'Ingrese el nombre del post']) !!}
     @error('name')
-        <small class="text-danger">{{ $message }}</smallc>
+        <small class="text-danger">{{ $message }}</small>
     @enderror
 </div>
 <div class="form-group">
     {!! Form::label('slug','Slug:') !!}
     {!! Form::text('slug', null, ['class' =>'form-control','placeholder'=>'Ingrese el slug del post','readonly']) !!}
     @error('slug')
-        <small class="text-danger">{{ $message }}</smallc>
+        <small class="text-danger">{{ $message }}</small>
     @enderror
 </div>
 <div class="form-group">
     {!! Form::label('category_id','Categoria:') !!}
     {!! Form::select('category_id', $categories ,null, ['class' =>'form-control']) !!}
     @error('category_id')
-    <small class="text-danger">{{ $message }}</smallc>
+    <small class="text-danger">{{ $message }}</small>
 @enderror
 </div>
 <div class="form-group">

@@ -11,13 +11,13 @@ use App\Http\Requests\PostRequest;
 use Illuminate\Support\Facades\Storage;
 class AdminPostController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:admin.posts.index')->only('index');
-        $this->middleware('can:admin.posts.create')->only('create','store');
-        $this->middleware('can:admin.posts.edit')->only('edit','update');
-        $this->middleware('can:admin.posts.destroy')->only('destroy');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('can:admin.posts.index')->only('index');
+    //     $this->middleware('can:admin.posts.create')->only('create','store');
+    //     $this->middleware('can:admin.posts.edit')->only('edit','update');
+    //     $this->middleware('can:admin.posts.destroy')->only('destroy');
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -49,11 +49,10 @@ class AdminPostController extends Controller
      */
     public function store(PostRequest $request)
     {
-    //    return $request->file('file')
        $post = Post::create($request->all());
+       
 
         if ($request->file('file')) {
-            // str_replace("11223344", "","REGISTER 11223344 here");
             $url= str_replace('public/','',Storage::put('public/posts', $request->file('file')));
             $post->image()->create([
                 'url' => $url

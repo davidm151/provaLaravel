@@ -30,6 +30,6 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user->roles()->sync($request->roles);
-        return view('admin.users.edit',compact('user','roles'))->with('info','Se assigno los roles correctamente.');
+        return redirect()->route('admin.users.edit',$user)->with('info','Se assigno los roles correctamente.');
     }
 }
